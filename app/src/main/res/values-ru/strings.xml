@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Погода</string>
+    <string name="attribution">Данные предоставлены сайтом OpenWeatherMap.org</string>
+    <string name="error_fetch_weather">Данные не загружены</string>
+    <string name="error_location_unavailable">Текущее место не определено</string>
+    <string name="today">Сегодня</string>
+    <string name="tomorrow">Завтра</string>
+    <string name="monday">Понедельник</string>
+    <string name="sky_is_clear">ясное небо</string>
+    <string name="nineteen_degrees">19°</string>
+    <string name="fifteen_degrees">15°</string>
+    <string name="empty_list">Нет данных!</string>
+    <string name="change_city">Выберите город</string>
+    <string name="last_update">Обновлено: </string>
+</resources>
