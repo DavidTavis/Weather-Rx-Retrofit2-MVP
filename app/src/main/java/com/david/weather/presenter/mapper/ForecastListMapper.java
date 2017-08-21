@@ -5,10 +5,17 @@ import com.david.weather.presenter.vo.Forecast;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func1;
 
 public class ForecastListMapper implements Func1<ForecastWeather, List<Forecast>> {
+
+    @Inject
+    public ForecastListMapper() {
+    }
+
     @Override
     public List<Forecast> call(ForecastWeather forecastWeather) {
         List<Forecast> forecastList = Observable.from(forecastWeather.cityEntity)

@@ -13,12 +13,17 @@ import android.widget.Toast;
 
 import com.david.weather.R;
 import com.david.weather.model.api.LocationService;
+import com.david.weather.other.di.view.DaggerViewComponent;
+import com.david.weather.other.di.view.ViewComponent;
+import com.david.weather.other.di.view.ViewDynamicModule;
 import com.david.weather.presenter.WeatherPresenter;
 import com.david.weather.presenter.vo.Forecast;
 import com.david.weather.view.adapter.ForecastListAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -30,13 +35,24 @@ public class WeatherFragment extends BaseFragment implements WeatherView {
     @Bind(R.id.current_temperature) TextView currentTemperatureTextView;
     @Bind(R.id.swipe_refresh_container) SwipeRefreshLayout swipeRefreshLayout;
 
-    private WeatherPresenter presenter = new WeatherPresenter(this);
     private ForecastListAdapter adapter;
     private LocationService locationService;
 
+    private ViewComponent viewComponent;
+
+    @Inject
+    protected WeatherPresenter presenter;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        if (viewComponent == null) {
+            viewComponent = DaggerViewComponent.builder()
+                    .viewDynamicModule(new ViewDynamicModule(this))
+                    .build();
+        }
+        viewComponent.inject(this);
         super.onCreate(savedInstanceState);
+
         locationService = new LocationService(getActivity(),presenter,this);
     }
 
@@ -55,6 +71,10 @@ public class WeatherFragment extends BaseFragment implements WeatherView {
         presenter.onCreate(savedInstanceState);
 
         return view;
+    }
+
+    public void setViewComponent(ViewComponent viewComponent) {
+        this.viewComponent = viewComponent;
     }
 
     @Override

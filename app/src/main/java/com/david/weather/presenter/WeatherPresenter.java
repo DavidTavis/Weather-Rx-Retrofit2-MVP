@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.david.weather.helper.DayFormatter;
 import com.david.weather.helper.TemperatureFormatter;
 import com.david.weather.helper.Util;
+import com.david.weather.other.App;
 import com.david.weather.presenter.mapper.ForecastListMapper;
 import com.david.weather.presenter.mapper.WeatherMapper;
 import com.david.weather.presenter.vo.Forecast;
@@ -17,6 +18,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observer;
 import rx.Subscription;
 
@@ -27,14 +30,24 @@ public class WeatherPresenter extends BasePresenter {
 
     public WeatherView view;
 
-    private ForecastListMapper forecastListMapper = new ForecastListMapper();
-    private WeatherMapper weatherMapper = new WeatherMapper();
-
     private List<Forecast> forecastList;
     private Weather weather;
 
     public String timeUpdate;
+
+    @Inject
+    protected ForecastListMapper forecastListMapper;
+
+    @Inject
+    protected WeatherMapper weatherMapper;
+
+    // for DI
+    @Inject
+    public WeatherPresenter() {
+    }
+
     public WeatherPresenter(WeatherView view) {
+        App.getComponent().inject(this);
         this.view = view;
     }
 
@@ -42,7 +55,7 @@ public class WeatherPresenter extends BasePresenter {
 
         if (lat == 0 || lon == 0 || lang.isEmpty()) return;
 
-        Subscription subCurrentWeather = dataForecast.getCurrentWeather(lon,lat,lang)
+        Subscription subCurrentWeather = model.getCurrentWeather(lon,lat,lang)
                 .map(weatherMapper)
                 .subscribe(new Observer<Weather>() {
                     @Override
@@ -66,7 +79,7 @@ public class WeatherPresenter extends BasePresenter {
                 });
         addSubscription(subCurrentWeather);
 
-        Subscription subForecast = dataForecast.getGlobalWeather(lon, lat, lang)
+        Subscription subForecast = model.getGlobalWeather(lon, lat, lang)
                 .map(forecastListMapper)
                 .subscribe(new Observer<List<Forecast>>() {
                     @Override
